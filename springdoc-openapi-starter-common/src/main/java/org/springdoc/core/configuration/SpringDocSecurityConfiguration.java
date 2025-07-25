@@ -3,29 +3,30 @@
  *  *
  *  *  *
  *  *  *  *
- *  *  *  *  * Copyright 2019-2022 the original author or authors.
  *  *  *  *  *
- *  *  *  *  * Licensed under the Apache License, Version 2.0 (the "License");
- *  *  *  *  * you may not use this file except in compliance with the License.
- *  *  *  *  * You may obtain a copy of the License at
+ *  *  *  *  *  * Copyright 2019-2025 the original author or authors.
+ *  *  *  *  *  *
+ *  *  *  *  *  * Licensed under the Apache License, Version 2.0 (the "License");
+ *  *  *  *  *  * you may not use this file except in compliance with the License.
+ *  *  *  *  *  * You may obtain a copy of the License at
+ *  *  *  *  *  *
+ *  *  *  *  *  *      https://www.apache.org/licenses/LICENSE-2.0
+ *  *  *  *  *  *
+ *  *  *  *  *  * Unless required by applicable law or agreed to in writing, software
+ *  *  *  *  *  * distributed under the License is distributed on an "AS IS" BASIS,
+ *  *  *  *  *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  *  *  *  *  * See the License for the specific language governing permissions and
+ *  *  *  *  *  * limitations under the License.
  *  *  *  *  *
- *  *  *  *  *      https://www.apache.org/licenses/LICENSE-2.0
- *  *  *  *  *
- *  *  *  *  * Unless required by applicable law or agreed to in writing, software
- *  *  *  *  * distributed under the License is distributed on an "AS IS" BASIS,
- *  *  *  *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  *  *  *  * See the License for the specific language governing permissions and
- *  *  *  *  * limitations under the License.
  *  *  *  *
  *  *  *
  *  *
- *
+ *  
  */
 
 package org.springdoc.core.configuration;
 
 
-import java.lang.reflect.Field;
 import java.util.Optional;
 
 import io.swagger.v3.oas.models.Operation;
@@ -58,10 +59,10 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.web.FilterChainProxy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.ui.DefaultLoginPageGeneratingFilter;
 import org.springframework.security.web.context.AbstractSecurityWebApplicationInitializer;
@@ -73,6 +74,7 @@ import static org.springdoc.core.utils.SpringDocUtils.getConfig;
 
 /**
  * The type Spring doc security configuration.
+ *
  * @author bnasslahsen
  */
 @Lazy(false)
@@ -84,6 +86,9 @@ import static org.springdoc.core.utils.SpringDocUtils.getConfig;
 @ImportRuntimeHints(SpringDocSecurityHints.class)
 public class SpringDocSecurityConfiguration {
 
+	/**
+	 * The constant LOGGER.
+	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(SpringDocSecurityConfiguration.class);
 
 	static {
@@ -109,7 +114,7 @@ public class SpringDocSecurityConfiguration {
 		@Bean
 		@ConditionalOnProperty(SPRINGDOC_SHOW_LOGIN_ENDPOINT)
 		@Lazy(false)
-		OpenApiCustomizer springSecurityLoginEndpointCustomiser(ApplicationContext applicationContext) {
+		OpenApiCustomizer springSecurityLoginEndpointCustomizer(ApplicationContext applicationContext) {
 			FilterChainProxy filterChainProxy = applicationContext.getBean(AbstractSecurityWebApplicationInitializer.DEFAULT_FILTER_NAME, FilterChainProxy.class);
 			return openAPI -> {
 				for (SecurityFilterChain filterChain : filterChainProxy.getFilterChains()) {
@@ -132,9 +137,8 @@ public class SpringDocSecurityConfiguration {
 						String mediaType = org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 						if (optionalDefaultLoginPageGeneratingFilter.isPresent()) {
 							DefaultLoginPageGeneratingFilter defaultLoginPageGeneratingFilter = optionalDefaultLoginPageGeneratingFilter.get();
-							Field formLoginEnabledField = FieldUtils.getDeclaredField(DefaultLoginPageGeneratingFilter.class, "formLoginEnabled", true);
 							try {
-								boolean formLoginEnabled = (boolean) formLoginEnabledField.get(defaultLoginPageGeneratingFilter);
+								boolean formLoginEnabled = (boolean) FieldUtils.readDeclaredField(defaultLoginPageGeneratingFilter, "formLoginEnabled", true);
 								if (formLoginEnabled)
 									mediaType = org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VALUE;
 							}
@@ -146,19 +150,16 @@ public class SpringDocSecurityConfiguration {
 						operation.requestBody(requestBody);
 						ApiResponses apiResponses = new ApiResponses();
 						apiResponses.addApiResponse(String.valueOf(HttpStatus.OK.value()), new ApiResponse().description(HttpStatus.OK.getReasonPhrase()));
-						apiResponses.addApiResponse(String.valueOf(HttpStatus.FORBIDDEN.value()), new ApiResponse().description(HttpStatus.FORBIDDEN.getReasonPhrase()));
+						apiResponses.addApiResponse(String.valueOf(HttpStatus.UNAUTHORIZED.value()), new ApiResponse().description(HttpStatus.UNAUTHORIZED.getReasonPhrase()));
 						operation.responses(apiResponses);
 						operation.addTagsItem("login-endpoint");
 						PathItem pathItem = new PathItem().post(operation);
 						try {
-							Field requestMatcherField = AbstractAuthenticationProcessingFilter.class.getDeclaredField("requiresAuthenticationRequestMatcher");
-							requestMatcherField.setAccessible(true);
-							AntPathRequestMatcher requestMatcher = (AntPathRequestMatcher) requestMatcherField.get(usernamePasswordAuthenticationFilter);
+							AntPathRequestMatcher requestMatcher = (AntPathRequestMatcher)FieldUtils.readField(usernamePasswordAuthenticationFilter, "requiresAuthenticationRequestMatcher", true);
 							String loginPath = requestMatcher.getPattern();
-							requestMatcherField.setAccessible(false);
 							openAPI.getPaths().addPathItem(loginPath, pathItem);
 						}
-						catch (NoSuchFieldException | IllegalAccessException |
+						catch (IllegalAccessException |
 							   ClassCastException ignored) {
 							// Exception escaped
 							LOGGER.trace(ignored.getMessage());
@@ -169,6 +170,9 @@ public class SpringDocSecurityConfiguration {
 		}
 	}
 
+	/**
+	 * The type Spring doc security o auth 2 configuration.
+	 */
 	@Lazy(false)
 	@Configuration(proxyBeanMethods = false)
 	@ConditionalOnClass(OAuth2AuthorizationService.class)
@@ -185,5 +189,20 @@ public class SpringDocSecurityConfiguration {
 		GlobalOpenApiCustomizer springDocSecurityOAuth2Customizer() {
 			return new SpringDocSecurityOAuth2Customizer();
 		}
+	}
+
+	/**
+	 * The type Spring doc security o auth 2 client configuration.
+	 */
+	@Lazy(false)
+	@Configuration(proxyBeanMethods = false)
+	@ConditionalOnClass(RegisteredOAuth2AuthorizedClient.class)
+	class SpringDocSecurityOAuth2ClientConfiguration {
+
+		static {
+			getConfig()
+					.addAnnotationsToIgnore(RegisteredOAuth2AuthorizedClient.class);
+		}
+
 	}
 }

@@ -35,18 +35,18 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 public class SpringDocApp3RedirectDefaultTest extends AbstractSpringDocTest {
 
 	@Test
-	public void shouldRedirectWithDefaultQueryParams() {
+	void shouldRedirectWithDefaultQueryParams() {
 		WebTestClient.ResponseSpec responseSpec = webTestClient.get().uri("/documentation/swagger-ui.html").exchange()
 				.expectStatus().isFound();
 		responseSpec.expectHeader()
-				.value("Location", Matchers.is("/documentation/webjars/swagger-ui/index.html"));
+                .value("Location", Matchers.is("/documentation/swagger-ui/index.html"));
 
 		webTestClient.get().uri("/documentation/v3/api-docs/swagger-config").exchange()
 				.expectStatus().isOk().expectBody()
 				.jsonPath("$.validatorUrl").isEqualTo("")
-				.jsonPath("$.oauth2RedirectUrl").isEqualTo("/documentation/webjars/swagger-ui/oauth2-redirect.html");
+                .jsonPath("$.oauth2RedirectUrl").isEqualTo("/documentation/swagger-ui/oauth2-redirect.html");
 
-		super.checkJS("index3", "/documentation/webjars" + Constants.SWAGGER_INITIALIZER_URL);
+		super.checkJS("index3", "/documentation" + Constants.SWAGGER_INITIALIZER_URL);
 	}
 
 	@SpringBootApplication

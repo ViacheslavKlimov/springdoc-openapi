@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
 		properties = { "management.endpoints.web.exposure.include=*",
 				"springdoc.use-management-port=true",
-				"management.server.port=9295",
+				"management.server.port=9395",
 				"management.server.base-path=/test",
 				"management.endpoints.web.base-path=/application" })
 class SpringDocApp16Test extends AbstractSpringDocActuatorTest {
@@ -47,13 +47,13 @@ class SpringDocApp16Test extends AbstractSpringDocActuatorTest {
 	}
 
 	@Test
-	public void testIndexActuator() {
+	void testIndexActuator() {
 		String contentAsString = actuatorRestTemplate.getForObject("/test/application/swagger-ui", String.class);
 		assertTrue(contentAsString.contains("Swagger UI"));
 	}
 
 	@Test
-	public void testIndexSwaggerConfig() throws Exception {
+	void testIndexSwaggerConfig() throws Exception {
 		String contentAsString = actuatorRestTemplate.getForObject("/test/application/swagger-ui/swagger-config", String.class);
 		String expected = getContent("results/app16-1.json");
 		assertEquals(expected, contentAsString, true);

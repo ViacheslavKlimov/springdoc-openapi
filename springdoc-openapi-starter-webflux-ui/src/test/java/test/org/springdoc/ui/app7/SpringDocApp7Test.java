@@ -35,8 +35,8 @@ import org.springframework.test.web.reactive.server.EntityExchangeResult;
 public class SpringDocApp7Test extends AbstractSpringDocTest {
 
 	@Test
-	public void transformed_index_with_oauth() throws Exception {
-		EntityExchangeResult<byte[]> getResult = webTestClient.get().uri("/webjars" + Constants.SWAGGER_INITIALIZER_URL)
+	void transformed_index_with_oauth() throws Exception {
+        EntityExchangeResult<byte[]> getResult = webTestClient.get().uri(Constants.SWAGGER_INITIALIZER_URL)
 				.exchange()
 				.expectStatus().isOk()
 				.expectBody().returnResult();

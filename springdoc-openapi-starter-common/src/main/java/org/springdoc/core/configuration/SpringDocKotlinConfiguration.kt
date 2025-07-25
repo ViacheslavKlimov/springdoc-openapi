@@ -1,10 +1,38 @@
+/*
+ *
+ *  *
+ *  *  *
+ *  *  *  *
+ *  *  *  *  *
+ *  *  *  *  *  * Copyright 2019-2025 the original author or authors.
+ *  *  *  *  *  *
+ *  *  *  *  *  * Licensed under the Apache License, Version 2.0 (the "License");
+ *  *  *  *  *  * you may not use this file except in compliance with the License.
+ *  *  *  *  *  * You may obtain a copy of the License at
+ *  *  *  *  *  *
+ *  *  *  *  *  *      https://www.apache.org/licenses/LICENSE-2.0
+ *  *  *  *  *  *
+ *  *  *  *  *  * Unless required by applicable law or agreed to in writing, software
+ *  *  *  *  *  * distributed under the License is distributed on an "AS IS" BASIS,
+ *  *  *  *  *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  *  *  *  *  * See the License for the specific language governing permissions and
+ *  *  *  *  *  * limitations under the License.
+ *  *  *  *  *
+ *  *  *  *
+ *  *  *
+ *  *
+ *  
+ */
+
 package org.springdoc.core.configuration
 
 import io.swagger.v3.oas.annotations.Parameter
-import io.swagger.v3.oas.models.media.ByteArraySchema
+import org.springdoc.core.converters.KotlinInlineClassUnwrappingConverter
+import org.springdoc.core.customizers.KotlinDeprecatedPropertyCustomizer
 import org.springdoc.core.customizers.ParameterCustomizer
-import org.springdoc.core.parsers.KotlinCoroutinesReturnTypeParser
+import org.springdoc.core.providers.ObjectMapperProvider
 import org.springdoc.core.utils.Constants
+import org.springdoc.core.utils.SchemaUtils
 import org.springdoc.core.utils.SpringDocUtils
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass
@@ -43,35 +71,19 @@ class SpringDocKotlinConfiguration() {
 	 */
 	init {
 		SpringDocUtils.getConfig()
+			.addResponseTypeToIgnore(Unit::class.java)
 			.addRequestWrapperToIgnore(Continuation::class.java)
-			.replaceWithSchema(ByteArray::class.java, ByteArraySchema())
 			.addDeprecatedType(Deprecated::class.java)
 	}
 
 	/**
-	 * Kotlin coroutines return type parser kotlin coroutines return type parser.
-	 *
-	 * @return the kotlin coroutines return type parser
-	 */
-	@Bean
-	@Lazy(false)
-	@ConditionalOnMissingBean
-	fun kotlinCoroutinesReturnTypeParser(): KotlinCoroutinesReturnTypeParser {
-		return KotlinCoroutinesReturnTypeParser()
-	}
-
-	/**
-	 * Kotlin springdoc-openapi ParameterCustomizer
+	 * Kotlin springdoc-openapi ParameterCustomizer.
+	 * deprecated as not anymore required, use [SchemaUtils.fieldNullable]
 	 *
 	 * @return the nullable Kotlin Request Parameter Customizer
+	 * @see SchemaUtils.fieldNullable()
 	 */
-	@Bean
-	@Lazy(false)
-	@ConditionalOnProperty(
-		name = [Constants.SPRINGDOC_NULLABLE_REQUEST_PARAMETER_ENABLED],
-		matchIfMissing = true
-	)
-	@ConditionalOnMissingBean
+	@Deprecated("Deprecated since 2.8.7", level = DeprecationLevel.ERROR)
 	fun nullableKotlinRequestParameterCustomizer(): ParameterCustomizer {
 		return ParameterCustomizer { parameterModel, methodParameter ->
 			if (parameterModel == null) return@ParameterCustomizer null
@@ -92,9 +104,13 @@ class SpringDocKotlinConfiguration() {
 					// parameter is not required if a default value is provided in @RequestParam
 					else if (requestParam != null && requestParam.defaultValue != ValueConstants.DEFAULT_NONE)
 						parameterModel.required = false
-					else
+					else{
+						val isJavaNullableAnnotationPresent = methodParameter.parameterAnnotations.any {
+							it.annotationClass.qualifiedName == "jakarta.annotation.Nullable"
+						}
 						parameterModel.required =
-							kParameter.type.isMarkedNullable == false
+							kParameter.type.isMarkedNullable == false && !isJavaNullableAnnotationPresent
+					}
 				}
 			}
 			return@ParameterCustomizer parameterModel
@@ -108,6 +124,24 @@ class SpringDocKotlinConfiguration() {
 		// The first parameter of the kotlin function is the "this" reference and not needed here.
 		// See also kotlin.reflect.KCallable.getParameters
 		return kotlinFunction.parameters[parameterIndex + 1]
+	}
+
+	@ConditionalOnClass(name = ["kotlin.reflect.full.KClasses"])
+	class KotlinReflectDependingConfiguration {
+
+		@Bean
+		@Lazy(false)
+		@ConditionalOnMissingBean
+		fun kotlinDeprecatedPropertyCustomizer(objectMapperProvider: ObjectMapperProvider): KotlinDeprecatedPropertyCustomizer {
+			return KotlinDeprecatedPropertyCustomizer(objectMapperProvider)
+		}
+
+		@Bean
+		@Lazy(false)
+		@ConditionalOnMissingBean
+		fun kotlinModelConverter(objectMapperProvider: ObjectMapperProvider): KotlinInlineClassUnwrappingConverter {
+			return KotlinInlineClassUnwrappingConverter(objectMapperProvider)
+		}
 	}
 
 }

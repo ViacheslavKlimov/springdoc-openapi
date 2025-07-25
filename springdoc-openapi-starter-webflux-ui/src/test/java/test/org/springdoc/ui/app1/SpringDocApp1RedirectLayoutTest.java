@@ -31,12 +31,12 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 public class SpringDocApp1RedirectLayoutTest extends AbstractSpringDocTest {
 
 	@Test
-	public void shouldRedirectWithConfigUrlIgnoringQueryParams() {
+	void shouldRedirectWithConfigUrlIgnoringQueryParams() {
 
 		WebTestClient.ResponseSpec responseSpec = webTestClient.get().uri("/swagger-ui.html").exchange()
 				.expectStatus().isFound();
 		responseSpec.expectHeader()
-				.value("Location", Matchers.is("/webjars/swagger-ui/index.html"));
+                .value("Location", Matchers.is("/swagger-ui/index.html"));
 
 		super.checkJS("index1-layout");
 	}

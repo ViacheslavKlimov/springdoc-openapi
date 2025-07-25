@@ -3,19 +3,21 @@
  *  *
  *  *  *
  *  *  *  *
- *  *  *  *  * Copyright 2019-2023 the original author or authors.
  *  *  *  *  *
- *  *  *  *  * Licensed under the Apache License, Version 2.0 (the "License");
- *  *  *  *  * you may not use this file except in compliance with the License.
- *  *  *  *  * You may obtain a copy of the License at
+ *  *  *  *  *  * Copyright 2019-2025 the original author or authors.
+ *  *  *  *  *  *
+ *  *  *  *  *  * Licensed under the Apache License, Version 2.0 (the "License");
+ *  *  *  *  *  * you may not use this file except in compliance with the License.
+ *  *  *  *  *  * You may obtain a copy of the License at
+ *  *  *  *  *  *
+ *  *  *  *  *  *      https://www.apache.org/licenses/LICENSE-2.0
+ *  *  *  *  *  *
+ *  *  *  *  *  * Unless required by applicable law or agreed to in writing, software
+ *  *  *  *  *  * distributed under the License is distributed on an "AS IS" BASIS,
+ *  *  *  *  *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  *  *  *  *  * See the License for the specific language governing permissions and
+ *  *  *  *  *  * limitations under the License.
  *  *  *  *  *
- *  *  *  *  *      https://www.apache.org/licenses/LICENSE-2.0
- *  *  *  *  *
- *  *  *  *  * Unless required by applicable law or agreed to in writing, software
- *  *  *  *  * distributed under the License is distributed on an "AS IS" BASIS,
- *  *  *  *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  *  *  *  * See the License for the specific language governing permissions and
- *  *  *  *  * limitations under the License.
  *  *  *  *
  *  *  *
  *  *
@@ -29,6 +31,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.SpecVersion;
 import org.springdoc.core.configuration.SpringDocConfiguration;
 import org.springdoc.core.properties.SpringDocConfigProperties.ApiDocs.OpenApiVersion;
@@ -182,6 +185,11 @@ public class SpringDocConfigProperties {
 	private boolean useManagementPort;
 
 	/**
+	 * Allowed locales for i18n.
+	 */
+	private List<String> allowedLocales;
+
+	/**
 	 * The Disable i18n.
 	 */
 	private boolean disableI18n;
@@ -255,6 +263,87 @@ public class SpringDocConfigProperties {
 	 * The Nullable request parameter enabled.
 	 */
 	private boolean nullableRequestParameterEnabled;
+
+	/**
+	 * The trim kotlin indent.
+	 */
+	private boolean trimKotlinIndent;
+
+	/**
+	 * The Open api.
+	 */
+	private OpenAPI OpenApi;
+
+	/**
+	 * The Enable extra schemas resolution.
+	 */
+	private boolean enableExtraSchemas;
+
+	/**
+	 * Set explicit-object-schema to true to always include type:
+	 * object in the schema, or to false to omit type: object.
+	 */
+	private boolean explicitObjectSchema;
+
+	/**
+	 * When set to true, schemas without a defined type will be deserialized as an ArbitrarySchema (with no type),
+	 * instead of an ObjectSchema with type: object.
+	 */
+	private boolean useArbitrarySchemas;
+
+	/**
+	 * Is enable additional schemas resolution boolean.
+	 *
+	 * @return the boolean
+	 */
+	public boolean isEnableExtraSchemas() {
+		return enableExtraSchemas;
+	}
+
+	/**
+	 * Sets enable additional schemas resolution.
+	 *
+	 * @param enableExtraSchemas the enable additional schemas resolution
+	 */
+	public void setEnableExtraSchemas(boolean enableExtraSchemas) {
+		this.enableExtraSchemas = enableExtraSchemas;
+	}
+
+	/**
+	 * Gets open api.
+	 *
+	 * @return the open api
+	 */
+	public OpenAPI getOpenApi() {
+		return OpenApi;
+	}
+
+	/**
+	 * Sets open api.
+	 *
+	 * @param openApi the open api
+	 */
+	public void setOpenApi(OpenAPI openApi) {
+		this.OpenApi = openApi;
+	}
+
+	/**
+	 * Gets trim kotlin indent.
+	 *
+	 * @return the trim kotlin indent.
+	 */
+	public boolean isTrimKotlinIndent() {
+		return trimKotlinIndent;
+	}
+
+	/**
+	 * Sets trim kotlin indent
+	 *
+	 * @param trimKotlinIndent the trim kotlin indent.
+	 */
+	public void setTrimKotlinIndent(boolean trimKotlinIndent) {
+		this.trimKotlinIndent = trimKotlinIndent;
+	}
 
 	/**
 	 * Gets override with generic response.
@@ -937,6 +1026,24 @@ public class SpringDocConfigProperties {
 	}
 
 	/**
+	 * List of allowed locales for i18n.
+	 *
+	 * @return the allowed locales
+	 */
+	public List<String> getAllowedLocales() {
+		return allowedLocales;
+	}
+
+	/**
+	 * Sets allowed locales for i18n.
+	 *
+	 * @param allowedLocales the allowed locales
+	 */
+	public void setAllowedLocales(List<String> allowedLocales) {
+		this.allowedLocales = allowedLocales;
+	}
+
+	/**
 	 * Is disable i 18 n boolean.
 	 *
 	 * @return the boolean
@@ -1255,7 +1362,7 @@ public class SpringDocConfigProperties {
 		/**
 		 * The OpenAPI version.
 		 */
-		private OpenApiVersion version;
+		private OpenApiVersion version = OpenApiVersion.OPENAPI_3_1;
 
 		/**
 		 * Gets path.
@@ -1517,6 +1624,12 @@ public class SpringDocConfigProperties {
 		private String displayName;
 
 		/**
+		 * The Open api.
+		 */
+		private OpenAPI openApi;
+
+
+		/**
 		 * Instantiates a new Group config.
 		 */
 		public GroupConfig() {
@@ -1712,6 +1825,24 @@ public class SpringDocConfigProperties {
 			this.displayName = displayName;
 		}
 
+		/**
+		 * Gets open api.
+		 *
+		 * @return the open api
+		 */
+		public OpenAPI getOpenApi() {
+			return openApi;
+		}
+
+		/**
+		 * Sets open api.
+		 *
+		 * @param openApi the open api
+		 */
+		public void setOpenApi(OpenAPI openApi) {
+			this.openApi = openApi;
+		}
+
 		@Override
 		public boolean equals(Object o) {
 			if (this == o) return true;
@@ -1783,5 +1914,41 @@ public class SpringDocConfigProperties {
 	 */
 	public void setEnableDefaultApiDocs(boolean enableDefaultApiDocs) {
 		this.enableDefaultApiDocs = enableDefaultApiDocs;
+	}
+
+	/**
+	 * Is explicit object schema boolean.
+	 *
+	 * @return the boolean
+	 */
+	public boolean isExplicitObjectSchema() {
+		return explicitObjectSchema;
+	}
+
+	/**
+	 * Sets explicit object schema.
+	 *
+	 * @param explicitObjectSchema the explicit object schema
+	 */
+	public void setExplicitObjectSchema(boolean explicitObjectSchema) {
+		this.explicitObjectSchema = explicitObjectSchema;
+	}
+
+	/**
+	 * Is use arbitrary schemas boolean.
+	 *
+	 * @return the boolean
+	 */
+	public boolean isUseArbitrarySchemas() {
+		return useArbitrarySchemas;
+	}
+
+	/**
+	 * Sets use arbitrary schemas.
+	 *
+	 * @param useArbitrarySchemas the use arbitrary schemas
+	 */
+	public void setUseArbitrarySchemas(boolean useArbitrarySchemas) {
+		this.useArbitrarySchemas = useArbitrarySchemas;
 	}
 }

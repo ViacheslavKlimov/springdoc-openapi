@@ -56,7 +56,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(properties = {
 		"springdoc.pre-loading-enabled=true",
-		"springdoc.pre-loading-locales=ja"
+		"springdoc.pre-loading-locales=ja",
+		"springdoc.api-docs.version=openapi_3_0"
 })
 public class SpringDocApp209Test extends AbstractCommonTest {
 	public static String className;
@@ -96,7 +97,7 @@ public class SpringDocApp209Test extends AbstractCommonTest {
 	}
 
 	@Test
-	public void shouldOnlyByCalledOnce() throws Exception {
+	void shouldOnlyByCalledOnce() throws Exception {
 	//	assertEquals(1, openAPIService.getNumberOfTimesCalculatePathWasCalled());
 
 		className = getClass().getSimpleName();

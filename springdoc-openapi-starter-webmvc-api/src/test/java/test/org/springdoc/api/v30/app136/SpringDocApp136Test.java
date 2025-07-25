@@ -3,7 +3,7 @@
  *  *
  *  *  *
  *  *  *  *
- *  *  *  *  * Copyright 2019-2022 the original author or authors.
+ *  *  *  *  * Copyright 2019-2024 the original author or authors.
  *  *  *  *  *
  *  *  *  *  * Licensed under the Apache License, Version 2.0 (the "License");
  *  *  *  *  * you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ import static org.springdoc.core.utils.Constants.SPRINGDOC_CACHE_DISABLED;
 /**
  * Tests deterministic creation of operationIds
  */
-@SpringBootTest(properties = { SPRINGDOC_CACHE_DISABLED + "=true" })
+@SpringBootTest(properties = { SPRINGDOC_CACHE_DISABLED + "=true", "springdoc.api-docs.version=openapi_3_0"  })
 public class SpringDocApp136Test extends AbstractCommonTest {
 
 	@Autowired

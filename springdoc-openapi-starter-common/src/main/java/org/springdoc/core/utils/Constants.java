@@ -3,23 +3,25 @@
  *  *
  *  *  *
  *  *  *  *
- *  *  *  *  * Copyright 2019-2022 the original author or authors.
  *  *  *  *  *
- *  *  *  *  * Licensed under the Apache License, Version 2.0 (the "License");
- *  *  *  *  * you may not use this file except in compliance with the License.
- *  *  *  *  * You may obtain a copy of the License at
+ *  *  *  *  *  * Copyright 2019-2025 the original author or authors.
+ *  *  *  *  *  *
+ *  *  *  *  *  * Licensed under the Apache License, Version 2.0 (the "License");
+ *  *  *  *  *  * you may not use this file except in compliance with the License.
+ *  *  *  *  *  * You may obtain a copy of the License at
+ *  *  *  *  *  *
+ *  *  *  *  *  *      https://www.apache.org/licenses/LICENSE-2.0
+ *  *  *  *  *  *
+ *  *  *  *  *  * Unless required by applicable law or agreed to in writing, software
+ *  *  *  *  *  * distributed under the License is distributed on an "AS IS" BASIS,
+ *  *  *  *  *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  *  *  *  *  * See the License for the specific language governing permissions and
+ *  *  *  *  *  * limitations under the License.
  *  *  *  *  *
- *  *  *  *  *      https://www.apache.org/licenses/LICENSE-2.0
- *  *  *  *  *
- *  *  *  *  * Unless required by applicable law or agreed to in writing, software
- *  *  *  *  * distributed under the License is distributed on an "AS IS" BASIS,
- *  *  *  *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  *  *  *  * See the License for the specific language governing permissions and
- *  *  *  *  * limitations under the License.
  *  *  *  *
  *  *  *
  *  *
- *
+ *  
  */
 
 package org.springdoc.core.utils;
@@ -30,6 +32,7 @@ import static org.springframework.util.AntPathMatcher.DEFAULT_PATH_SEPARATOR;
 
 /**
  * The type Constants.
+ *
  * @author bnasslahsen
  */
 public final class Constants {
@@ -38,6 +41,11 @@ public final class Constants {
 	 * The constant SPRINGDOC_PREFIX.
 	 */
 	public static final String SPRINGDOC_PREFIX = "springdoc";
+
+	/**
+	 * The constant SPRINGDOC_SWAGGER_PREFIX.
+	 */
+	public static final String SPRINGDOC_SWAGGER_PREFIX =SPRINGDOC_PREFIX+".swagger-ui";
 
 	/**
 	 * The constant DEFAULT_API_DOCS_URL.
@@ -103,11 +111,6 @@ public final class Constants {
 	 * The constant SPRINGDOC_SCHEMA_RESOLVE_PROPERTIES.
 	 */
 	public static final String SPRINGDOC_SCHEMA_RESOLVE_PROPERTIES = "springdoc.api-docs.resolve-schema-properties";
-
-	/**
-	 * The constant SPRINGDOC_SPEC_PROPERTIES_PREFIX.
-	 */
-	public static final String SPRINGDOC_SPEC_PROPERTIES_PREFIX = "springdoc.spec-properties.";
 
 	/**
 	 * The constant SPRINGDOC_SHOW_LOGIN_ENDPOINT.
@@ -404,7 +407,12 @@ public final class Constants {
 	/**
 	 * The constant LINKS_SCHEMA_CUSTOMISER.
 	 */
-	public static final String LINKS_SCHEMA_CUSTOMISER = "linksSchemaCustomizer";
+	public static final String LINKS_SCHEMA_CUSTOMIZER = "linksSchemaCustomizer";
+
+	/**
+	 * The constant GLOBAL_OPEN_API_CUSTOMIZER.
+	 */
+	public static final String GLOBAL_OPEN_API_CUSTOMIZER = "globalOpenApiCustomizer";
 
 	/**
 	 * The constant SPRINGDOC_SORT_CONVERTER_ENABLED.
@@ -414,7 +422,23 @@ public final class Constants {
 	/**
 	 * The constant SPRINGDOC_NULLABLE_REQUEST_PARAMETER_ENABLED.
 	 */
+	@Deprecated(since = "2.8.7")
 	public static final String SPRINGDOC_NULLABLE_REQUEST_PARAMETER_ENABLED = "springdoc.nullable-request-parameter-enabled";
+
+	/**
+	 * The constant SPRINGDOC_DEFAULT_FLAT_PARAM_OBJECT.
+	 */
+	public static final String SPRINGDOC_DEFAULT_FLAT_PARAM_OBJECT = "springdoc.default-flat-param-object";
+	/**
+	 * The constant SPRINGDOC_ENABLE_ADDITIONAL_SCHEMAS_RESOLUTION.
+	 */
+	public static final String SPRINGDOC_ENABLE_EXTRA_SCHEMAS = "springdoc.enable-extra-schemas";
+
+	/**
+	 * The constant SPRINGDOC_EXPLICIT_OBJECT_SCHEMA.
+	 */
+	public static final String SPRINGDOC_EXPLICIT_OBJECT_SCHEMA = "springdoc.explicit-object-schema";
+	
 	/**
 	 * Instantiates a new Constants.
 	 */

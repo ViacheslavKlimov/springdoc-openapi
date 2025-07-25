@@ -3,23 +3,25 @@
  *  *
  *  *  *
  *  *  *  *
- *  *  *  *  * Copyright 2019-2022 the original author or authors.
  *  *  *  *  *
- *  *  *  *  * Licensed under the Apache License, Version 2.0 (the "License");
- *  *  *  *  * you may not use this file except in compliance with the License.
- *  *  *  *  * You may obtain a copy of the License at
+ *  *  *  *  *  * Copyright 2019-2025 the original author or authors.
+ *  *  *  *  *  *
+ *  *  *  *  *  * Licensed under the Apache License, Version 2.0 (the "License");
+ *  *  *  *  *  * you may not use this file except in compliance with the License.
+ *  *  *  *  *  * You may obtain a copy of the License at
+ *  *  *  *  *  *
+ *  *  *  *  *  *      https://www.apache.org/licenses/LICENSE-2.0
+ *  *  *  *  *  *
+ *  *  *  *  *  * Unless required by applicable law or agreed to in writing, software
+ *  *  *  *  *  * distributed under the License is distributed on an "AS IS" BASIS,
+ *  *  *  *  *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  *  *  *  *  * See the License for the specific language governing permissions and
+ *  *  *  *  *  * limitations under the License.
  *  *  *  *  *
- *  *  *  *  *      https://www.apache.org/licenses/LICENSE-2.0
- *  *  *  *  *
- *  *  *  *  * Unless required by applicable law or agreed to in writing, software
- *  *  *  *  * distributed under the License is distributed on an "AS IS" BASIS,
- *  *  *  *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  *  *  *  * See the License for the specific language governing permissions and
- *  *  *  *  * limitations under the License.
  *  *  *  *
  *  *  *
  *  *
- *
+ *  
  */
 
 package org.springdoc.core.mixins;
@@ -34,12 +36,15 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import io.swagger.v3.core.jackson.mixin.Schema31Mixin;
 
 /**
  * The interface Sorted schema mixin 31.
+ *
  * @author bnasslashen
  */
-@JsonPropertyOrder(value = { "type", "format" }, alphabetic = true)
+@JsonPropertyOrder(value = {"type", "format", "if", "then", "else"}, alphabetic = true)
 public interface SortedSchemaMixin31 {
 
 	/**
@@ -113,12 +118,13 @@ public interface SortedSchemaMixin31 {
 	 * @return the types
 	 */
 	@JsonProperty("type")
+	@JsonSerialize(using = Schema31Mixin.TypeSerializer.class)
 	Set<String> getTypes();
 
 	/**
 	 * Add extension.
 	 *
-	 * @param name the name
+	 * @param name  the name
 	 * @param value the value
 	 */
 	@JsonAnySetter
@@ -137,7 +143,7 @@ public interface SortedSchemaMixin31 {
 	 *
 	 * @return the example
 	 */
-	@JsonInclude(JsonInclude.Include.CUSTOM)
+	@JsonInclude(value = JsonInclude.Include.NON_NULL)
 	Object getExample();
 
 	/**
@@ -147,5 +153,13 @@ public interface SortedSchemaMixin31 {
 	 */
 	@JsonIgnore
 	Object getJsonSchemaImpl();
+
+	/**
+	 * Gets boolean schema value.
+	 *
+	 * @return the boolean schema value
+	 */
+	@JsonIgnore
+	Boolean getBooleanSchemaValue();
 
 }

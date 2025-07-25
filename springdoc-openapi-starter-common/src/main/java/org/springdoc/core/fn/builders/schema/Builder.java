@@ -3,23 +3,25 @@
  *  *
  *  *  *
  *  *  *  *
- *  *  *  *  * Copyright 2019-2022 the original author or authors.
  *  *  *  *  *
- *  *  *  *  * Licensed under the Apache License, Version 2.0 (the "License");
- *  *  *  *  * you may not use this file except in compliance with the License.
- *  *  *  *  * You may obtain a copy of the License at
+ *  *  *  *  *  * Copyright 2019-2025 the original author or authors.
+ *  *  *  *  *  *
+ *  *  *  *  *  * Licensed under the Apache License, Version 2.0 (the "License");
+ *  *  *  *  *  * you may not use this file except in compliance with the License.
+ *  *  *  *  *  * You may obtain a copy of the License at
+ *  *  *  *  *  *
+ *  *  *  *  *  *      https://www.apache.org/licenses/LICENSE-2.0
+ *  *  *  *  *  *
+ *  *  *  *  *  * Unless required by applicable law or agreed to in writing, software
+ *  *  *  *  *  * distributed under the License is distributed on an "AS IS" BASIS,
+ *  *  *  *  *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  *  *  *  *  * See the License for the specific language governing permissions and
+ *  *  *  *  *  * limitations under the License.
  *  *  *  *  *
- *  *  *  *  *      https://www.apache.org/licenses/LICENSE-2.0
- *  *  *  *  *
- *  *  *  *  * Unless required by applicable law or agreed to in writing, software
- *  *  *  *  * distributed under the License is distributed on an "AS IS" BASIS,
- *  *  *  *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  *  *  *  * See the License for the specific language governing permissions and
- *  *  *  *  * limitations under the License.
  *  *  *  *
  *  *  *
  *  *
- *
+ *  
  */
 
 package org.springdoc.core.fn.builders.schema;
@@ -35,6 +37,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema.AccessMode;
 import io.swagger.v3.oas.annotations.media.Schema.AdditionalPropertiesValue;
 import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
+import io.swagger.v3.oas.annotations.media.Schema.SchemaResolution;
 import org.apache.commons.lang3.ArrayUtils;
 
 /**
@@ -227,6 +230,11 @@ public class Builder {
 	 * The list of optional extensions
 	 */
 	private Extension[] extensions = {};
+
+	/**
+	 * The Schema resolution.
+	 */
+	private SchemaResolution schemaResolution;
 
 	/**
 	 * Allows to specify the additionalProperties value
@@ -819,6 +827,61 @@ public class Builder {
 	}
 
 	/**
+	 * Schema resolution builder.
+	 *
+	 * @param schemaResolution the schema resolution
+	 * @return the builder
+	 */
+	public Builder schemaResolution(SchemaResolution schemaResolution) {
+		this.schemaResolution = schemaResolution;
+		return this;
+	}
+
+	/**
+	 * Dependent required map builder.
+	 *
+	 * @param dependentRequiredMap the dependent required map
+	 * @return the builder
+	 */
+	public Builder dependentRequiredMap(DependentRequired[] dependentRequiredMap) {
+		this.dependentRequiredMap = dependentRequiredMap;
+		return this;
+	}
+
+	/**
+	 * Dependent schemas builder.
+	 *
+	 * @param dependentSchemas the dependent schemas
+	 * @return the builder
+	 */
+	public Builder dependentSchemas(StringToClassMapItem[] dependentSchemas) {
+		this.dependentSchemas = dependentSchemas;
+		return this;
+	}
+
+	/**
+	 * Pattern properties builder.
+	 *
+	 * @param patternProperties the pattern properties
+	 * @return the builder
+	 */
+	public Builder patternProperties(StringToClassMapItem[] patternProperties) {
+		this.patternProperties = patternProperties;
+		return this;
+	}
+
+	/**
+	 * Properties builder.
+	 *
+	 * @param properties the properties
+	 * @return the builder
+	 */
+	public Builder properties(StringToClassMapItem[] properties) {
+		this.properties = properties;
+		return this;
+	}
+
+	/**
 	 * Additional properties builder.
 	 *
 	 * @param additionalProperties the additional properties
@@ -1194,6 +1257,11 @@ public class Builder {
 			@Override
 			public String _const() {
 				return _const;
+			}
+
+			@Override
+			public SchemaResolution schemaResolution() {
+				return schemaResolution;
 			}
 		};
 	}

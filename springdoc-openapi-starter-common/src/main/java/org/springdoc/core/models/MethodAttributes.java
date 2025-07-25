@@ -3,40 +3,46 @@
  *  *
  *  *  *
  *  *  *  *
- *  *  *  *  * Copyright 2019-2022 the original author or authors.
  *  *  *  *  *
- *  *  *  *  * Licensed under the Apache License, Version 2.0 (the "License");
- *  *  *  *  * you may not use this file except in compliance with the License.
- *  *  *  *  * You may obtain a copy of the License at
+ *  *  *  *  *  * Copyright 2019-2025 the original author or authors.
+ *  *  *  *  *  *
+ *  *  *  *  *  * Licensed under the Apache License, Version 2.0 (the "License");
+ *  *  *  *  *  * you may not use this file except in compliance with the License.
+ *  *  *  *  *  * You may obtain a copy of the License at
+ *  *  *  *  *  *
+ *  *  *  *  *  *      https://www.apache.org/licenses/LICENSE-2.0
+ *  *  *  *  *  *
+ *  *  *  *  *  * Unless required by applicable law or agreed to in writing, software
+ *  *  *  *  *  * distributed under the License is distributed on an "AS IS" BASIS,
+ *  *  *  *  *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  *  *  *  *  * See the License for the specific language governing permissions and
+ *  *  *  *  *  * limitations under the License.
  *  *  *  *  *
- *  *  *  *  *      https://www.apache.org/licenses/LICENSE-2.0
- *  *  *  *  *
- *  *  *  *  * Unless required by applicable law or agreed to in writing, software
- *  *  *  *  * distributed under the License is distributed on an "AS IS" BASIS,
- *  *  *  *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  *  *  *  * See the License for the specific language governing permissions and
- *  *  *  *  * limitations under the License.
  *  *  *  *
  *  *  *
  *  *
- *
+ *  
  */
 
 package org.springdoc.core.models;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.responses.ApiResponses;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.Nullable;
 
 import org.springframework.core.annotation.AnnotatedElementUtils;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,6 +51,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * The type Method attributes.
+ *
  * @author bnasslahsen
  */
 public class MethodAttributes {
@@ -125,12 +132,18 @@ public class MethodAttributes {
 	private String javadocReturn;
 
 	/**
+	 * The Use return type schema.
+	 */
+	private boolean useReturnTypeSchema;
+
+	/**
 	 * Instantiates a new Method attributes.
-	 * @param methodProducesNew the method produces new
+	 *
+	 * @param methodProducesNew        the method produces new
 	 * @param defaultConsumesMediaType the default consumes media type
 	 * @param defaultProducesMediaType the default produces media type
-	 * @param genericMapResponse the generic map response
-	 * @param locale the locale
+	 * @param genericMapResponse       the generic map response
+	 * @param locale                   the locale
 	 */
 	public MethodAttributes(String[] methodProducesNew, String defaultConsumesMediaType, String defaultProducesMediaType, Map<String, ApiResponse> genericMapResponse, Locale locale) {
 		this.methodProduces = methodProducesNew;
@@ -142,9 +155,10 @@ public class MethodAttributes {
 
 	/**
 	 * Instantiates a new Method attributes.
+	 *
 	 * @param defaultConsumesMediaType the default consumes media type
 	 * @param defaultProducesMediaType the default produces media type
-	 * @param locale the locale
+	 * @param locale                   the locale
 	 */
 	public MethodAttributes(String defaultConsumesMediaType, String defaultProducesMediaType, Locale locale) {
 		this.defaultConsumesMediaType = defaultConsumesMediaType;
@@ -154,12 +168,13 @@ public class MethodAttributes {
 
 	/**
 	 * Instantiates a new Method attributes.
+	 *
 	 * @param defaultConsumesMediaType the default consumes media type
 	 * @param defaultProducesMediaType the default produces media type
-	 * @param methodConsumes the method consumes
-	 * @param methodProduces the method produces
-	 * @param headers the headers
-	 * @param locale the locale
+	 * @param methodConsumes           the method consumes
+	 * @param methodProduces           the method produces
+	 * @param headers                  the headers
+	 * @param locale                   the locale
 	 */
 	public MethodAttributes(String defaultConsumesMediaType, String defaultProducesMediaType, String[] methodConsumes, String[] methodProduces, String[] headers, Locale locale) {
 		this.defaultConsumesMediaType = defaultConsumesMediaType;
@@ -272,29 +287,39 @@ public class MethodAttributes {
 	 *
 	 * @param produces the produces
 	 * @param consumes the consumes
-	 * @param headers the headers
+	 * @param headers  the headers
 	 */
 	private void fillMethods(String[] produces, String[] consumes, String[] headers) {
-		if (ArrayUtils.isEmpty(methodProduces)) {
-			if (ArrayUtils.isNotEmpty(produces))
-				methodProduces = produces;
-			else if (ArrayUtils.isNotEmpty(classProduces))
-				methodProduces = classProduces;
-			else
-				methodProduces = new String[] { defaultProducesMediaType };
-		}
+        if (ArrayUtils.isNotEmpty(produces)) {
+            methodProduces = mergeArrays(methodProduces, produces);
+        } else if (ArrayUtils.isNotEmpty(classProduces)) {
+            methodProduces = mergeArrays(methodProduces, classProduces);
+        } else if (ArrayUtils.isEmpty(methodProduces)) {
+            methodProduces = new String[] {defaultProducesMediaType};
+        }
 
-		if (ArrayUtils.isEmpty(methodConsumes)) {
-			if (ArrayUtils.isNotEmpty(consumes))
-				methodConsumes = consumes;
-			else if (ArrayUtils.isNotEmpty(classConsumes))
-				methodConsumes = classConsumes;
-			else
-				methodConsumes = new String[] { defaultConsumesMediaType };
-		}
+        if (ArrayUtils.isNotEmpty(consumes)) {
+            methodConsumes = mergeArrays(methodConsumes, consumes);
+        } else if (ArrayUtils.isNotEmpty(classConsumes)) {
+            methodConsumes = mergeArrays(methodConsumes, classConsumes);
+        } else if (ArrayUtils.isEmpty(methodConsumes)) {
+            methodConsumes = new String[] {defaultConsumesMediaType};
+        }
 
-		if (CollectionUtils.isEmpty(this.headers))
-			setHeaders(headers);
+        setHeaders(headers);
+	}
+
+	/**
+	 * Merge string arrays into one array with unique values
+	 *
+	 * @param array1 the array1
+	 * @param array2 the array2
+	 * @return the string [ ]
+	 */
+	private String[] mergeArrays(@Nullable String[] array1, String[] array2) {
+		Set<String> uniqueValues = array1 == null ? new LinkedHashSet<>() : Arrays.stream(array1).collect(Collectors.toCollection(LinkedHashSet::new));
+		uniqueValues.addAll(Arrays.asList(array2));
+		return uniqueValues.toArray(new String[0]);
 	}
 
 	/**
@@ -478,5 +503,23 @@ public class MethodAttributes {
 	 */
 	public Locale getLocale() {
 		return locale;
+	}
+
+	/**
+	 * Is use return type schema boolean.
+	 *
+	 * @return the boolean
+	 */
+	public boolean isUseReturnTypeSchema() {
+		return useReturnTypeSchema;
+	}
+
+	/**
+	 * Sets use return type schema.
+	 *
+	 * @param useReturnTypeSchema the use return type schema
+	 */
+	public void setUseReturnTypeSchema(boolean useReturnTypeSchema) {
+		this.useReturnTypeSchema = useReturnTypeSchema;
 	}
 }

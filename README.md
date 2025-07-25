@@ -4,15 +4,14 @@
 [![Known Vulnerabilities](https://snyk.io/test/github/springdoc/springdoc-openapi.git/badge.svg)](https://snyk.io/test/github/springdoc/springdoc-openapi.git)
 [![Stack Exchange questions](https://img.shields.io/stackexchange/stackoverflow/t/springdoc)](https://stackoverflow.com/questions/tagged/springdoc?tab=Votes)
 
-IMPORTANT: ``springdoc-openapi v1.7.0 `` is the latest Open Source release supporting Spring Boot 2.x and 1.x. 
+IMPORTANT: ``springdoc-openapi v1.8.0`` is the latest Open Source release supporting Spring Boot 2.x and 1.x. 
 
 An extended support for [*springdoc-openapi v1*](https://springdoc.org/v1) 
 project is now available for organizations that need support beyond 2023. 
 
-For more details, feel free to reach out: sales@springdoc.org
+For more details, feel free to reach out: [sales@springdoc.org](mailto:sales@springdoc.org)
 
-If you ❤️ this project consider becoming
-a [sponsor](https://github.com/sponsors/springdoc).
+``springdoc-openapi`` is on [Open Collective](https://opencollective.com/springdoc). If you ❤️ this project consider becoming a [sponsor](https://github.com/sponsors/springdoc).
 
 This project is sponsored by
 
@@ -29,6 +28,13 @@ This project is sponsored by
 <a href="https://www.contrastsecurity.com/" target="_blank">
    <img src="https://springdoc.org/img/contrastsecurity.svg" height="10%" width="30%" />
 </a>
+
+ <a href="https://www.lvm.de/" target="_blank">
+   <img src="https://springdoc.org/img/LVM_Versicherung_2010_logo.svg.png" height="10%" width="25%" />
+  </a>
+ <a href="https://gdnext.com/" target="_blank">
+   <img src="https://springdoc.org/img/gdnext.png" height="10%" width="10%" />
+  </a>
 </p>
 
 # Table of Contents
@@ -41,7 +47,6 @@ This project is sponsored by
         - [Source Code for Demo Applications.](#source-code-for-demo-applications)
         - [Demo Spring Boot 2 Web MVC with OpenAPI 3.](#demo-spring-boot-2-web-mvc-with-openapi-3)
         - [Demo Spring Boot 2 WebFlux with OpenAPI 3.](#demo-spring-boot-2-webflux-with-openapi-3)
-        - [Demo Spring Boot 1 Web MVC with OpenAPI 3.](#demo-spring-boot-1-web-mvc-with-openapi-3)
         - [Demo Spring Boot 2 WebFlux with Functional endpoints OpenAPI 3.](#demo-spring-boot-2-webflux-with-functional-endpoints-openapi-3)
         - [Demo Spring Boot 2 and Spring Hateoas with OpenAPI 3.](#demo-spring-boot-2-and-spring-hateoas-with-openapi-3)
     - [Integration of the library in a Spring Boot 3.x project without the swagger-ui:](#integration-of-the-library-in-a-spring-boot-3x-project-without-the-swagger-ui)
@@ -79,8 +84,7 @@ The following video introduces the Library:
 
 For *spring-boot v3* support, make sure you use [springdoc-openapi v2](https://springdoc.org/)
 
-This is a community-based project, not maintained by the Spring Framework Contributors (
-Pivotal)
+This is a community-based project, not maintained by the Spring Framework Contributors (Pivotal)
 
 # **Getting Started**
 
@@ -96,16 +100,22 @@ Pivotal)
     * `port`: The server port
     * `context-path`: The context path of the application
 * Documentation can be available in yaml format as well, on the following path:
-  /v3/api-docs.yaml
+  `/v3/api-docs.yaml`
 * Add the `springdoc-openapi-ui` library to the list of your project dependencies (No
   additional configuration is needed):
 
+Maven
 ```xml
    <dependency>
       <groupId>org.springdoc</groupId>
       <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
       <version>last-release-version</version>
    </dependency>
+```
+
+Gradle
+```groovy
+implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:latest'
 ```
 
 * This step is optional: For custom path of the swagger documentation in HTML format, add
@@ -118,15 +128,19 @@ springdoc.swagger-ui.path=/swagger-ui.html
 
 ## Spring-boot with OpenAPI Demo applications.
 
-### [Source Code for Demo Applications](https://github.com/springdoc/springdoc-openapi-demos/tree/2.x).
+### [Source Code for Demo Applications](https://github.com/springdoc/springdoc-openapi-demos/tree/master).
 
-### [Demo Spring Boot 2 Web MVC with OpenAPI 3](http://144.24.171.248:8081/).
+## [Demo Spring Boot 3 Web MVC with OpenAPI 3](https://demos.springdoc.org/demo-spring-boot-3-webmvc).
 
-### [Demo Spring Boot 2 WebFlux with OpenAPI 3](http://144.24.171.248:8082/).
+## [Demo Spring Boot 3 WebFlux with OpenAPI 3](https://demos.springdoc.org/demo-spring-boot-3-webflux/swagger-ui.html).
 
-### [Demo Spring Boot 2 WebFlux with Functional endpoints OpenAPI 3](http://144.24.171.248:8084/).
+## [Demo Spring Boot 3 WebFlux with Functional endpoints OpenAPI 3](https://demos.springdoc.org/demo-spring-boot-3-webflux-functional/swagger-ui.html).
 
-### [Demo Spring Boot 2 and Spring Hateoas with OpenAPI 3](http://144.24.171.248:8085/).
+## [Demo Spring Boot 3 and Spring Cloud Function Web MVC](https://demos.springdoc.org/spring-cloud-function-webmvc).
+
+## [Demo Spring Boot 3 and Spring Cloud Function WebFlux](http://158.101.191.70:8085/swagger-ui.html).
+
+## [Demo Spring Boot 3 and Spring Cloud Gateway](https://demos.springdoc.org/demo-microservices/swagger-ui.html).
 
 ![Branching](https://springdoc.org/img/pets.png)
 
@@ -142,12 +156,18 @@ springdoc.swagger-ui.path=/swagger-ui.html
 * Add the library to the list of your project dependencies. (No additional configuration
   is needed)
 
+Maven
 ```xml
    <dependency>
       <groupId>org.springdoc</groupId>
       <artifactId>springdoc-openapi-starter-webmvc-api</artifactId>
       <version>last-release-version</version>
    </dependency>
+```
+
+Gradle
+```groovy
+implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:latest'
 ```
 
 * This step is optional: For custom path of the OpenAPI documentation in Json format, add
@@ -184,15 +204,21 @@ and `@SecurityScheme` annotations within a Spring managed bean.
 
 * Documentation can be available in yaml format as well, on the following path :
   /v3/api-docs.yaml
-* Add the library to the list of your project dependencies ( No additional configuration
+* Add the library to the list of your project dependencies (No additional configuration
   is needed)
 
+Maven
 ```xml
    <dependency>
-	<groupId>org.springdoc</groupId>
-	<artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
-	<version>last-release-version</version>
-</dependency>
+      <groupId>org.springdoc</groupId>
+      <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
+      <version>last-release-version</version>
+   </dependency>
+```
+
+Gradle
+```groovy
+implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:latest'
 ```
 
 * This step is optional: For custom path of the swagger documentation in HTML format, add
@@ -208,12 +234,12 @@ The artifacts can be viewed accessed at the following locations:
 
 Releases:
 
-* [https://s01.oss.sonatype.org/content/groups/public/org/springdoc/](https://s01.oss.sonatype.org/content/groups/public/org/springdoc/)
+* [https://central.sonatype.com/search?q=g:org.springdoc)](https://central.sonatype.com/search?q=g:org.springdoc)
   .
 
 Snapshots:
 
-* [https://s01.oss.sonatype.org/content/repositories/snapshots/org/springdoc/](https://s01.oss.sonatype.org/content/repositories/snapshots/org/springdoc/)
+* [https://central.sonatype.com/service/rest/repository/browse/maven-snapshots/org/springdoc/](https://central.sonatype.com/service/rest/repository/browse/maven-snapshots/org/springdoc/)
   .
 
 # Acknowledgements

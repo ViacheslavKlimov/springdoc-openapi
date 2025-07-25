@@ -39,14 +39,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
 		properties = { "spring.jackson.property-naming-strategy=UPPER_CAMEL_CASE", "springdoc.show-actuator=true",
 				"management.endpoints.web.base-path=/management",
-				"server.servlet.context-path=/demo/api", "management.server.port=9002", "management.server.base-path=/demo/api",
+				"server.servlet.context-path=/demo/api", "management.server.port=9302", "management.server.base-path=/demo/api",
 				"springdoc.swagger-ui.urls[0].url=/api-docs/xxx/v1/openapi.yml",
 				"springdoc.swagger-ui.urls[0].name=toto",
 })
 public class SpringDocSwaggerConfigWithBothFileGeneratedSpecsTest extends AbstractSpringDocActuatorTest {
 
 	@Test
-	public void testIndexSwaggerConfig() throws Exception {
+	void testIndexSwaggerConfig() throws Exception {
 		mockMvc.perform(get("/demo/api/v3/api-docs/swagger-config").contextPath("/demo/api"))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("validatorUrl", equalTo("")))
